@@ -1,5 +1,6 @@
 import "./globals.css";
-import Provider from "./Provider";
+import Provider from "./_providers/Provider";
+import ConvexClientProvider from "./_providers/ConvexClientProvider";
 
 export const metadata = {
   title: "",
@@ -10,7 +11,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Provider>{children}</Provider>
+        <ConvexClientProvider>
+          <Provider>{children}</Provider>
+        </ConvexClientProvider>
       </body>
     </html>
   );

@@ -10,9 +10,13 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import uuid4 from "uuid4";
 
 function SignInDialog({ openDialog, closeDialog }) {
   const { setUser } = useUser();
+  const createUser = useMutation(api.users.CreateUser);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -22,8 +26,27 @@ function SignInDialog({ openDialog, closeDialog }) {
         "https://www.googleapis.com/oauth2/v3/userinfo",
         { headers: { Authorization: `Bearer ${tokenResponse?.access_token}` } }
       );
+      const user = userInfo.data;
 
-      setUser(userInfo?.data);
+      if (!user) return;
+
+      console.log(user);
+
+      await createUser({
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        uid: uuid4(),
+      });
+
+      console.log("ctx");
+
+      if (typeof window !== undefined)
+        localStorage.setItem("user", JSON.stringify(user));
+
+      console.log("local");
+
+      setUser(user);
       closeDialog();
     },
   });
