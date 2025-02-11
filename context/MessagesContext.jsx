@@ -6,8 +6,6 @@ const MessagesContext = createContext();
 
 const initialState = { role: "user", content: "" };
 
-export { MessagesContext };
-
 function MessagesProvider({ children }) {
   const [messages, setMessages] = useState(initialState);
 

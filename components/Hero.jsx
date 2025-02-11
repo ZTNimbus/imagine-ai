@@ -1,16 +1,28 @@
 "use client";
 
 import { useMessages } from "@/context/MessagesContext";
-import Colors from "@/data/Colors";
+import { useUser } from "@/context/UserContext";
 import Lookup from "@/data/Lookup";
 import { ArrowRight, Link } from "lucide-react";
 import { useState } from "react";
+import SignInDialog from "./SignInDialog";
 
 function Hero() {
   const [userInput, setUserInput] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
   const { messages, setMessages } = useMessages();
+  const { user, setUser } = useUser();
+
+  function closeDialog() {
+    setOpenDialog(false);
+  }
 
   function onGenerate(input) {
+    if (!user.name) {
+      setOpenDialog(true);
+      return;
+    }
+
     setMessages({
       role: "user",
       content: input,
@@ -19,7 +31,9 @@ function Hero() {
 
   return (
     <div className={"flex flex-col items-center mt-36 xl:mt-52 gap-2"}>
-      <h2 className={"font-bold text-4xl"}>{Lookup.HERO_HEADING}</h2>
+      <h2 className={"font-bold text-4xl antialiased"}>
+        {Lookup.HERO_HEADING}
+      </h2>
       <p className={"text-gray-400 mt-3 font-medium"}>{Lookup.HERO_DESC}</p>
 
       <div className={"p-5 border rounded-xl max-w-xl w-full mt-10"}>
@@ -63,6 +77,8 @@ function Hero() {
           );
         })}
       </div>
+
+      <SignInDialog openDialog={openDialog} closeDialog={closeDialog} />
     </div>
   );
 }
