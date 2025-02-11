@@ -6,27 +6,43 @@ import Lookup from "@/data/Lookup";
 import { ArrowRight, Link } from "lucide-react";
 import { useState } from "react";
 import SignInDialog from "./SignInDialog";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 function Hero() {
   const [userInput, setUserInput] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const { messages, setMessages } = useMessages();
   const { user, setUser } = useUser();
+  const createWorkspace = useMutation(api.workspace.CreateWorkspace);
+  const navigate = useRouter();
 
   function closeDialog() {
     setOpenDialog(false);
   }
 
-  function onGenerate(input) {
+  async function onGenerate(input) {
     if (!user.name) {
       setOpenDialog(true);
       return;
     }
 
-    setMessages({
+    const newMessage = {
       role: "user",
       content: input,
+    };
+
+    setMessages(newMessage);
+
+    const workspaceId = await createWorkspace({
+      user: user._id,
+      messages: [newMessage],
     });
+
+    console.log(workspaceId);
+
+    navigate.push(`/workspace/${workspaceId}`);
   }
 
   return (
