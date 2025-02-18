@@ -33,14 +33,12 @@ function Hero() {
       content: input,
     };
 
-    setMessages(newMessage);
+    setMessages([newMessage]);
 
     const workspaceId = await createWorkspace({
       user: user._id,
       messages: [newMessage],
     });
-
-    console.log(workspaceId);
 
     navigate.push(`/workspace/${workspaceId}`);
   }

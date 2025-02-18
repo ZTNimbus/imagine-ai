@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react";
 
 const MessagesContext = createContext();
 
-const initialState = { role: "user", content: "" };
+const initialState = [];
 
 function MessagesProvider({ children }) {
   const [messages, setMessages] = useState(initialState);
